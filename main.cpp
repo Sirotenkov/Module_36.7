@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
             username = "root",
             password = "root";
 
-    Widget w(nullptr, host, database, username, password);
     LogWidget l;
 
     while(true)
@@ -65,6 +64,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    Widget w(nullptr, l.getUsername(), host, database, username, password);
     w.show();
+
     return a.exec();
 }

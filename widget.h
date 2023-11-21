@@ -10,6 +10,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <sqlusers.h>
+#include <sqlmessages.h>
 
 class Widget : public QMainWindow
 {
@@ -17,14 +18,22 @@ class Widget : public QMainWindow
 
 public:
     Widget(QWidget *parent = nullptr,
+           QString const& login = "",
            QString const& host = "",
            QString const& database = "",
            QString const& username = "",
            QString const& password = "");
     ~Widget();
 
+private slots:
+    void sendMessagePrivate();
+    void sendMessageAll();
+
 private:
+    QString login_;
+
     SqlUsers sqlUsers_;
+    SqlMessages sqlMessages_;
 
     QPushButton* sendToAll_;
     QPushButton* sendPrivate_;

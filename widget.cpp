@@ -3,22 +3,28 @@
 #include <QVBoxLayout>
 
 Widget::Widget(QWidget *parent,
+               QString const& login,
                QString const& host,
                QString const& database,
                QString const& username,
                QString const& password)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+      login_(login)
 {
     QFont const font_but("Courrier New", 10, QFont::ExtraLight),
             font_text("Courrier New", 10, QFont::ExtraLight, QFont::Style::StyleItalic);
 
-    if(!sqlUsers_.open(host, database, username, password))
+    if(!sqlUsers_.open(host, database, username, password) ||
+            !sqlMessages_.open(host, database, username, password))
         throw std::exception();
 
     sendToAll_ = new QPushButton("Send to all", this);
     sendToAll_->setFont(font_but);
+    connect(sendToAll_, &QPushButton::clicked, this, &Widget::sendMessageAll);
+
     sendPrivate_ = new QPushButton("Send private", this);
     sendPrivate_->setFont(font_but);
+    connect(sendPrivate_, &QPushButton::clicked, this, &Widget::sendMessagePrivate);
 
     usersCbs_ = new QComboBox(this);
     QStringList usernames;
@@ -80,5 +86,24 @@ Widget::Widget(QWidget *parent,
 Widget::~Widget()
 {
     sqlUsers_.close();
+    sqlMessages_.close();
 }
 
+void Widget::sendMessagePrivate()
+{
+    if(!login_.isEmpty() && !usersCbs_->currentText().isEmpty() && !textMessage_->text().isEmpty())
+        sqlMessages_.send(login_, usersCbs_->currentText(), textMessage_->text());
+}
+
+void Widget::sendMessageAll()
+{
+    if(!login_.isEmpty() && !textMessage_->text().isEmpty())
+    {
+        QStringList users;
+        sqlUsers_.list(users);
+
+        for(auto const& user : users)
+            if(!user.isEmpty() && user != login_)
+                sqlMessages_.send(login_, user, textMessage_->text());
+    }
+}
