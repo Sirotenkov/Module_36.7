@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     logwidget.cpp \
     main.cpp \
+    sqlmessages.cpp \
     sqlusers.cpp \
     widget.cpp
 
 HEADERS += \
     logwidget.h \
+    sqlmessages.h \
     sqlusers.h \
     widget.h
 
