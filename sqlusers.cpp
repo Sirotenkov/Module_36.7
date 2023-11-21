@@ -2,6 +2,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <exception>
+#include <sqlusers.h>
 #include "sqlusers.h"
 
 SqlUsers::SqlUsers()
@@ -58,4 +59,19 @@ bool SqlUsers::signup(QString const& username, QString const& password)
         insert into users(username, password)
         values ('%1', '%2')
     )").arg(username).arg(password));
+}
+
+bool SqlUsers::list(QStringList& usernames)
+{
+    QSqlQuery query(db);
+    auto const success = query.exec(QString(R"(
+          select username from users
+    )"));
+    while (query.next())
+    {
+        auto const username = query.value(0).toString();
+        if(!username.isEmpty())
+            usernames.push_back(username);
+    }
+    return success;
 }

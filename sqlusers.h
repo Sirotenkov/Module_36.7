@@ -3,6 +3,7 @@
 
 #include <QSqlDatabase>
 #include <QString>
+#include <QStringList>
 
 class SqlUsers
 {
@@ -16,6 +17,7 @@ public:
     bool find(QString const& username);
     bool login(QString const& username, QString const& password);
     bool signup(QString const& username, QString const& password);
+    bool list(QStringList& usernames);
 
 private:
     QSqlDatabase db;
