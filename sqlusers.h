@@ -20,7 +20,7 @@ public:
     bool list(QStringList& usernames);
 
 private:
-    QSqlDatabase db;
+    QSqlDatabase db_;
 
 };
 
