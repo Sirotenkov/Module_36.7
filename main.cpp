@@ -7,7 +7,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Widget w;
+    QString const host = "localhost",
+            database = "users",
+            username = "root",
+            password = "root";
+
+    Widget w(nullptr, host, database, username, password);
     LogWidget l;
 
     while(true)
@@ -17,7 +22,7 @@ int main(int argc, char *argv[])
             SqlUsers sqlUsers;
             auto const state = l.getState();
 
-            if(!sqlUsers.open("localhost", "users", "root", "root"))
+            if(!sqlUsers.open(host, database, username, password))
             {
                 l.setInfoLog("Не удалось подключиться к БД!");
                 continue;

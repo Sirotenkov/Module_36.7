@@ -2,16 +2,29 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-Widget::Widget(QWidget *parent)
+Widget::Widget(QWidget *parent,
+               QString const& host,
+               QString const& database,
+               QString const& username,
+               QString const& password)
     : QMainWindow(parent)
 {
     QFont const font_but("Courrier New", 10, QFont::ExtraLight),
             font_text("Courrier New", 10, QFont::ExtraLight, QFont::Style::StyleItalic);
 
+    if(!sqlUsers_.open(host, database, username, password))
+        throw std::exception();
+
     sendToAll_ = new QPushButton("Send to all", this);
     sendToAll_->setFont(font_but);
     sendPrivate_ = new QPushButton("Send private", this);
     sendPrivate_->setFont(font_but);
+
+    usersCbs_ = new QComboBox(this);
+    QStringList usernames;
+    if(!sqlUsers_.list(usernames))
+        throw std::exception();
+    usersCbs_->addItems(usernames);
 
     usermenu_ = new QMenuBar(this);
     mainMenu_ = new QMenu("Главное меню");
@@ -41,6 +54,7 @@ Widget::Widget(QWidget *parent)
     hBox2->addWidget(textMessage_);
     hBox2->addWidget(sendToAll_);
     hBox2->addWidget(sendPrivate_);
+    hBox2->addWidget(usersCbs_);
 
     auto const toolbar3 = new QWidget(this);
     auto const hBox3 = new QHBoxLayout(toolbar3);
@@ -65,5 +79,6 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
+    sqlUsers_.close();
 }
 
