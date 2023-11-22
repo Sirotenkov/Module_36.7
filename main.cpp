@@ -1,5 +1,6 @@
 #include "logwidget.h"
 #include "widget.h"
+#include "adminwidget.h"
 #include "sqlusers.h"
 #include <QApplication>
 
@@ -13,6 +14,7 @@ int main(int argc, char *argv[])
             password = "root";
 
     LogWidget l;
+    bool adminLogin = false;
 
     while(true)
     {
@@ -32,7 +34,13 @@ int main(int argc, char *argv[])
 
             if(state == LogWidget::State::StateLogin)
             {
-                if (sqlUsers.login(l.getUsername(), l.getPassword()))
+                // Для простоты имя админа и его пароль жёстко заданы
+                if(l.getUsername() == "admin" && l.getPassword() == "1234")
+                {
+                    adminLogin = true;
+                    break;
+                }
+                else if (sqlUsers.login(l.getUsername(), l.getPassword()))
                 {
                     break;
                 }
@@ -67,8 +75,14 @@ int main(int argc, char *argv[])
         }
     }
 
-    Widget w(nullptr, l.getUsername(), host, database, username, password);
-    w.show();
+    QWidget* w = nullptr;
+
+    if(adminLogin)
+        w = new AdminWidget(nullptr, host, database, username, password);
+    else
+        w = new Widget(nullptr, l.getUsername(), host, database, username, password);
+
+    w->show();
 
     return a.exec();
 }
