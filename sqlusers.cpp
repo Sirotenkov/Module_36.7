@@ -76,6 +76,20 @@ bool SqlUsers::list(QStringList& usernames)
     return success;
 }
 
+bool SqlUsers::block(QString const& username)
+{
+    QSqlQuery query(db_);
+    return query.exec(QString(R"(
+        insert into blacklist(login)
+        values ('%1')
+    )").arg(username));
+}
+
+bool SqlUsers::isBlocked(QString const& username)
+{
+    return false;
+}
+
 QString SqlUsers::getLastError()const
 {
     return db_.lastError().text();

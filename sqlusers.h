@@ -18,6 +18,8 @@ public:
     bool login(QString const& username, QString const& password);
     bool signup(QString const& username, QString const& password);
     bool list(QStringList& usernames);
+    bool block(QString const& username);
+    bool isBlocked(QString const& username);
 
     QString getLastError()const;
 

@@ -43,7 +43,8 @@ AdminWidget::AdminWidget(QWidget *parent,
 
 void AdminWidget::block()
 {
-
+    if(!usersCbs_->currentText().isEmpty())
+        sqlUsers_.block(usersCbs_->currentText());
 }
 
 void AdminWidget::update()
