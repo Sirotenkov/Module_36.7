@@ -40,3 +40,21 @@ bool SqlMessages::send(QString const& from, QString const& to, QString const& te
         values ('%1', '%2', '%3')
     )").arg(from).arg(to).arg(text));
 }
+
+bool SqlMessages::recv(QString const& to, QVector<Message>& messages)
+{
+    QSqlQuery query(db_);
+    auto const success = query.exec(QString(R"(
+        select login_from, login_to, text from messages
+        where login_to = '%1'
+    )").arg(to));
+    while (query.next())
+    {
+        messages.push_back({
+           query.value(0).toString(),
+           query.value(1).toString(),
+           query.value(2).toString()
+       });
+    }
+    return success;
+}

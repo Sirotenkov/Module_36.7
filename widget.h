@@ -28,6 +28,7 @@ public:
 private slots:
     void sendMessagePrivate();
     void sendMessageAll();
+    void update();
 
 private:
     QString login_;
@@ -38,8 +39,8 @@ private:
     QPushButton* sendToAll_;
     QPushButton* sendPrivate_;
     QComboBox* usersCbs_;
-    QTextEdit* fromMe_;
-    QTextEdit* toMe_;
+    QTextEdit* privateText_;
+    QTextEdit* publicText_;
     QLineEdit* textMessage_;
     QLabel* label_;
     QMenuBar* usermenu_;

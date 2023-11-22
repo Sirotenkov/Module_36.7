@@ -4,6 +4,13 @@
 #include <QString>
 #include <QSqlDatabase>
 
+struct Message
+{
+    QString from;
+    QString to;
+    QString text;
+};
+
 class SqlMessages
 {
 public:
@@ -14,6 +21,7 @@ public:
     void close();
 
     bool send(QString const& from, QString const& to, QString const& text);
+    bool recv(QString const& to, QVector<Message>& text);
 
 private:
     QSqlDatabase db_;

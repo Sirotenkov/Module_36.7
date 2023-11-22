@@ -27,6 +27,7 @@ Widget::Widget(QWidget *parent,
     connect(sendPrivate_, &QPushButton::clicked, this, &Widget::sendMessagePrivate);
 
     usersCbs_ = new QComboBox(this);
+    usersCbs_->setFont(font_text);
     QStringList usernames;
     if(!sqlUsers_.list(usernames))
         throw std::exception();
@@ -40,16 +41,19 @@ Widget::Widget(QWidget *parent,
 
     usermenu_->addMenu(mainMenu_);
 
-    fromMe_ = new QTextEdit(this);
-    fromMe_->setFont(font_but);
-    toMe_ = new QTextEdit(this);
-    toMe_->setFont(font_but);
+    privateText_ = new QTextEdit(this);
+    privateText_->setFont(font_but);
+
+    publicText_ = new QTextEdit(this);
+    publicText_->setFont(font_but);
+
     label_ = new QLabel("Your message: ", this);
     label_->setFont(font_text);
     textMessage_ = new QLineEdit(this);
     textMessage_->setFont(font_text);
-    textMessage_->setPlaceholderText(" Здесь текст сообщения");
+    textMessage_->setPlaceholderText("Введите текст сообщения");
     textMessage_->setFont(font_text);
+    //textMessage_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     auto const toolbar2 = new QWidget(this);
     toolbar2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -66,8 +70,8 @@ Widget::Widget(QWidget *parent,
     auto const hBox3 = new QHBoxLayout(toolbar3);
     hBox3->setMargin(5);
     hBox3->setSpacing(5);
-    hBox3->addWidget(toMe_);
-    hBox3->addWidget(fromMe_);
+    hBox3->addWidget(publicText_);
+    hBox3->addWidget(privateText_);
 
     auto const vBox = new QVBoxLayout(this);
 
@@ -81,6 +85,8 @@ Widget::Widget(QWidget *parent,
 
     setMenuBar(usermenu_);
     setCentralWidget(centralWidget);
+
+    update();
 }
 
 Widget::~Widget()
@@ -98,12 +104,28 @@ void Widget::sendMessagePrivate()
 void Widget::sendMessageAll()
 {
     if(!login_.isEmpty() && !textMessage_->text().isEmpty())
-    {
-        QStringList users;
-        sqlUsers_.list(users);
+        sqlMessages_.send(login_, "all", textMessage_->text());
+}
 
-        for(auto const& user : users)
-            if(!user.isEmpty() && user != login_)
-                sqlMessages_.send(login_, user, textMessage_->text());
+void Widget::update()
+{
+    QVector<Message> publicMessages, privateMessages;
+
+    sqlMessages_.recv("all", publicMessages);
+    sqlMessages_.recv(login_, privateMessages);
+
+    QString privateText, publicText;
+
+    for(auto const& message: publicMessages) {
+        if(message.from != login_)
+            publicText += QString("<i>&lt;%1&gt;</i>: %2<br>").arg(message.from).arg(message.text);
     }
+
+    for(auto const& message: privateMessages) {
+        if(message.from != login_)
+            privateText += QString("<i>&lt;%1&gt;</i>: %2<br>").arg(message.from).arg(message.text);
+    }
+
+    publicText_->setHtml(publicText);
+    privateText_->setHtml(privateText);
 }
