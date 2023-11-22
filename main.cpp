@@ -23,7 +23,10 @@ int main(int argc, char *argv[])
 
             if(!sqlUsers.open(host, database, username, password))
             {
-                l.setInfoLog("Не удалось подключиться к БД!");
+                QString error = QString("%1\n%2")
+                        .arg("Не удалось подключиться к БД!")
+                        .arg(sqlUsers.getLastError());
+                l.setInfoLog(error);
                 continue;
             }
 

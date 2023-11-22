@@ -53,7 +53,6 @@ Widget::Widget(QWidget *parent,
     textMessage_->setFont(font_text);
     textMessage_->setPlaceholderText("Введите текст сообщения");
     textMessage_->setFont(font_text);
-    //textMessage_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     auto const toolbar2 = new QWidget(this);
     toolbar2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

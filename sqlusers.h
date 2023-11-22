@@ -19,6 +19,8 @@ public:
     bool signup(QString const& username, QString const& password);
     bool list(QStringList& usernames);
 
+    QString getLastError()const;
+
 private:
     QSqlDatabase db_;
 

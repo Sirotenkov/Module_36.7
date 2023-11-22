@@ -75,3 +75,8 @@ bool SqlUsers::list(QStringList& usernames)
     }
     return success;
 }
+
+QString SqlUsers::getLastError()const
+{
+    return db_.lastError().text();
+}
