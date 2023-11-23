@@ -44,6 +44,8 @@ private:
     QTextEdit* publicText_;
     QLineEdit* textMessage_;
     QLabel* label_;
+    QLabel* labelReceivedAll_;
+    QLabel* labelReceivedPrivate_;
     QMenuBar* usermenu_;
     QMenu* mainMenu_;
     QMenu* openNewDoc_;

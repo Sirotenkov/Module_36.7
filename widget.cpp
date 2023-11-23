@@ -36,7 +36,6 @@ Widget::Widget(QWidget *parent,
         throw std::exception();
     usersCbs_->addItems(usernames);
     usersCbs_->setDisabled(isBlocked);
-    connect(usersCbs_, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &Widget::update);
 
     usermenu_ = new QMenuBar(this);
     mainMenu_ = new QMenu("Главное меню");
@@ -46,9 +45,15 @@ Widget::Widget(QWidget *parent,
 
     usermenu_->addMenu(mainMenu_);
 
+    labelReceivedPrivate_ = new QLabel("Принятые приватные сообщения", this);
+    labelReceivedPrivate_->setFont(font_text);
+
     privateText_ = new QTextEdit(this);
     privateText_->setFont(font_but);
     privateText_->setTextInteractionFlags(Qt::NoTextInteraction);
+
+    labelReceivedAll_ = new QLabel("Принятые общие сообщения", this);
+    labelReceivedAll_->setFont(font_text);
 
     publicText_ = new QTextEdit(this);
     publicText_->setFont(font_but);
@@ -74,6 +79,14 @@ Widget::Widget(QWidget *parent,
     hBox2->addWidget(sendPrivate_);
     hBox2->addWidget(usersCbs_);
 
+    auto const toolbar1 = new QWidget(this);
+    auto const hBox1 = new QHBoxLayout(toolbar1);
+    hBox1->addWidget(labelReceivedAll_);
+    hBox1->addWidget(labelReceivedPrivate_);
+    hBox1->setMargin(5);
+    hBox1->setSpacing(0);
+
+
     auto const toolbar3 = new QWidget(this);
     auto const hBox3 = new QHBoxLayout(toolbar3);
     hBox3->setMargin(5);
@@ -86,6 +99,7 @@ Widget::Widget(QWidget *parent,
     vBox->setMargin(0);
     vBox->setSpacing(5);
     vBox->addWidget(toolbar2, Qt::AlignRight);
+    vBox->addWidget(toolbar1);
     vBox->addWidget(toolbar3);
 
     auto const centralWidget = new QWidget(this);
@@ -93,6 +107,7 @@ Widget::Widget(QWidget *parent,
 
     setMenuBar(usermenu_);
     setCentralWidget(centralWidget);
+    setWindowTitle("chat - " + login_);
 
     update();
 }
@@ -107,14 +122,12 @@ void Widget::sendMessagePrivate()
 {
     if(!login_.isEmpty() && !usersCbs_->currentText().isEmpty() && !textMessage_->text().isEmpty())
         sqlMessages_.send(login_, usersCbs_->currentText(), textMessage_->text());
-    update();
 }
 
 void Widget::sendMessageAll()
 {
     if(!login_.isEmpty() && !textMessage_->text().isEmpty())
         sqlMessages_.send(login_, "all", textMessage_->text());
-    update();
 }
 
 void Widget::update()

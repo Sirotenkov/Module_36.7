@@ -59,10 +59,10 @@ AdminWidget::AdminWidget(QWidget *parent,
     layout->addWidget(labelUsersBlackList_, 1, 1);
     layout->addWidget(messagesEdit_, 2, 0);
     layout->addWidget(usersBlackList_, 2, 1);
-    //layout->setMargin(0);
-    //layout->setSpacing(0);
+;
 
     setLayout(layout);
+    setWindowTitle("chat - admin");
     update();
 }
 
