@@ -5,7 +5,7 @@
 
 LogWidget::LogWidget(QDialog *parent) : QDialog(parent)
 {
-    QFont const font_but("Courrier New", 10, QFont::ExtraLight),
+    QFont const font_but("Sans serif", 10, QFont::ExtraLight),
             font_text("Courrier New", 10, QFont::ExtraLight, QFont::Style::StyleItalic);
 
     infoLog_ = new QLabel(this);

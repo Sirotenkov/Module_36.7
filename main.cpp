@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 
     LogWidget l;
     bool adminLogin = false;
+    bool isBlocked = false;
 
     while(true)
     {
@@ -42,6 +43,7 @@ int main(int argc, char *argv[])
                 }
                 else if (sqlUsers.login(l.getUsername(), l.getPassword()))
                 {
+                    isBlocked = sqlUsers.isBlocked(l.getUsername());
                     break;
                 }
                 else
@@ -80,7 +82,7 @@ int main(int argc, char *argv[])
     if(adminLogin)
         w = new AdminWidget(nullptr, host, database, username, password);
     else
-        w = new Widget(nullptr, l.getUsername(), host, database, username, password);
+        w = new Widget(nullptr, l.getUsername(), host, database, username, password, isBlocked);
 
     w->show();
 

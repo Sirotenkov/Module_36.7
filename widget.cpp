@@ -7,11 +7,12 @@ Widget::Widget(QWidget *parent,
                QString const& host,
                QString const& database,
                QString const& username,
-               QString const& password)
+               QString const& password,
+               bool isBlocked)
     : QMainWindow(parent),
       login_(login)
 {
-    QFont const font_but("Courrier New", 10, QFont::ExtraLight),
+    QFont const font_but("Sans serif", 10, QFont::ExtraLight),
             font_text("Courrier New", 10, QFont::ExtraLight, QFont::Style::StyleItalic);
 
     if(!sqlUsers_.open(host, database, username, password) ||
@@ -20,10 +21,12 @@ Widget::Widget(QWidget *parent,
 
     sendToAll_ = new QPushButton("Send to all", this);
     sendToAll_->setFont(font_but);
+    sendToAll_->setDisabled(isBlocked);
     connect(sendToAll_, &QPushButton::clicked, this, &Widget::sendMessageAll);
 
     sendPrivate_ = new QPushButton("Send private", this);
     sendPrivate_->setFont(font_but);
+    sendPrivate_->setDisabled(isBlocked);
     connect(sendPrivate_, &QPushButton::clicked, this, &Widget::sendMessagePrivate);
 
     usersCbs_ = new QComboBox(this);
@@ -32,6 +35,7 @@ Widget::Widget(QWidget *parent,
     if(!sqlUsers_.list(usernames))
         throw std::exception();
     usersCbs_->addItems(usernames);
+    usersCbs_->setDisabled(isBlocked);
 
     usermenu_ = new QMenuBar(this);
     mainMenu_ = new QMenu("Главное меню");
@@ -49,10 +53,12 @@ Widget::Widget(QWidget *parent,
 
     label_ = new QLabel("Your message: ", this);
     label_->setFont(font_text);
+
     textMessage_ = new QLineEdit(this);
     textMessage_->setFont(font_text);
     textMessage_->setPlaceholderText("Введите текст сообщения");
     textMessage_->setFont(font_text);
+    textMessage_->setDisabled(isBlocked);
 
     auto const toolbar2 = new QWidget(this);
     toolbar2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

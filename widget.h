@@ -22,7 +22,8 @@ public:
            QString const& host = "",
            QString const& database = "",
            QString const& username = "",
-           QString const& password = "");
+           QString const& password = "",
+           bool isBlocked = false);
     ~Widget();
 
 private slots:

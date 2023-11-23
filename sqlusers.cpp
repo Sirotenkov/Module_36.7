@@ -87,7 +87,11 @@ bool SqlUsers::block(QString const& username)
 
 bool SqlUsers::isBlocked(QString const& username)
 {
-    return false;
+    QSqlQuery query(QString(R"(
+        select login from blacklist
+        where login = '%1'
+    )").arg(username), db_);
+    return query.size() != 0;
 }
 
 QString SqlUsers::getLastError()const

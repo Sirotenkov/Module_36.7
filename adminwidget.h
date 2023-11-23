@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <sqlmessages.h>
 #include <sqlusers.h>
+#include <QLabel>
 
 class AdminWidget : public QWidget
 {
@@ -30,7 +31,11 @@ private:
 
     QComboBox* usersCbs_;
     QPushButton* blockBut_;
-    QTextEdit* textEdit_;
+    QTextEdit* messagesEdit_;
+    QTextEdit* usersBlackList_;
+    QLabel* labelTextEdit_;
+    QLabel* labelUsersBlackList_;
+
 
 };
 
