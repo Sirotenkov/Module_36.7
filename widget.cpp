@@ -36,6 +36,7 @@ Widget::Widget(QWidget *parent,
         throw std::exception();
     usersCbs_->addItems(usernames);
     usersCbs_->setDisabled(isBlocked);
+    connect(usersCbs_, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &Widget::update);
 
     usermenu_ = new QMenuBar(this);
     mainMenu_ = new QMenu("Главное меню");
@@ -47,9 +48,11 @@ Widget::Widget(QWidget *parent,
 
     privateText_ = new QTextEdit(this);
     privateText_->setFont(font_but);
+    privateText_->setTextInteractionFlags(Qt::NoTextInteraction);
 
     publicText_ = new QTextEdit(this);
     publicText_->setFont(font_but);
+    publicText_->setTextInteractionFlags(Qt::NoTextInteraction);
 
     label_ = new QLabel("Your message: ", this);
     label_->setFont(font_text);
@@ -104,12 +107,14 @@ void Widget::sendMessagePrivate()
 {
     if(!login_.isEmpty() && !usersCbs_->currentText().isEmpty() && !textMessage_->text().isEmpty())
         sqlMessages_.send(login_, usersCbs_->currentText(), textMessage_->text());
+    update();
 }
 
 void Widget::sendMessageAll()
 {
     if(!login_.isEmpty() && !textMessage_->text().isEmpty())
         sqlMessages_.send(login_, "all", textMessage_->text());
+    update();
 }
 
 void Widget::update()

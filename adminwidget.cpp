@@ -22,14 +22,19 @@ AdminWidget::AdminWidget(QWidget *parent,
     sqlUsers_.list(users);
     usersCbs_->insertItems(0, users);
 
-    blockBut_ = new QPushButton("Заблокировать", this);
+    blockBut_ = new QPushButton("Block", this);
     connect(blockBut_, &QPushButton::clicked, this, &AdminWidget::block);
     blockBut_->setFont(font_but);
+
+    unblockBut_ = new QPushButton("Unlock", this);
+    connect(unblockBut_, &QPushButton::clicked, this, &AdminWidget::unblock);
+    unblockBut_->setFont(font_but);
 
     auto const toolbar = new QWidget(this);
     auto const hBox = new QHBoxLayout(toolbar);
     hBox->addWidget(usersCbs_);
     hBox->addWidget(blockBut_);
+    hBox->addWidget(unblockBut_);
     hBox->setMargin(0);
     hBox->setSpacing(5);
     toolbar->setLayout(hBox);
@@ -37,11 +42,15 @@ AdminWidget::AdminWidget(QWidget *parent,
 
     labelTextEdit_ = new QLabel("All messages", this);
     labelTextEdit_->setFont(font_text);
+
     messagesEdit_ = new QTextEdit(this);
+    messagesEdit_->setTextInteractionFlags(Qt::NoTextInteraction);
 
     labelUsersBlackList_ = new QLabel("Black list", this);
     labelUsersBlackList_->setFont(font_text);
+
     usersBlackList_ = new QTextEdit(this);
+    usersBlackList_->setTextInteractionFlags(Qt::NoTextInteraction);
 
     auto const layout = new QGridLayout(this);
     layout->addWidget(toolbar, 0, 0);
@@ -59,8 +68,14 @@ AdminWidget::AdminWidget(QWidget *parent,
 
 void AdminWidget::block()
 {
-    if(!usersCbs_->currentText().isEmpty())
-        sqlUsers_.block(usersCbs_->currentText());
+    sqlUsers_.block(usersCbs_->currentText());
+    update();
+}
+
+void AdminWidget::unblock()
+{
+    sqlUsers_.unblock(usersCbs_->currentText());
+    update();
 }
 
 void AdminWidget::update()

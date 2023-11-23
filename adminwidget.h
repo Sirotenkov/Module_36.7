@@ -24,6 +24,7 @@ public:
 
 private slots:
     void block();
+    void unblock();
 
 private:
     SqlUsers sqlUsers_;
@@ -31,6 +32,7 @@ private:
 
     QComboBox* usersCbs_;
     QPushButton* blockBut_;
+    QPushButton* unblockBut_;
     QTextEdit* messagesEdit_;
     QTextEdit* usersBlackList_;
     QLabel* labelTextEdit_;

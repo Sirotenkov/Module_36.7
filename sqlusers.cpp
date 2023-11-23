@@ -78,10 +78,23 @@ bool SqlUsers::list(QStringList& usernames)
 
 bool SqlUsers::block(QString const& username)
 {
+    if(username.isEmpty())
+        return false;
     QSqlQuery query(db_);
     return query.exec(QString(R"(
         insert into blacklist(login)
         values ('%1')
+    )").arg(username));
+}
+
+bool SqlUsers::unblock(QString const& username)
+{
+    if(username.isEmpty())
+        return false;
+    QSqlQuery query(db_);
+    return query.exec(QString(R"(
+        delete from blacklist
+        where login = '%1'
     )").arg(username));
 }
 
